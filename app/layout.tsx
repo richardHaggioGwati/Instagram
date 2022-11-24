@@ -1,17 +1,24 @@
-import '../css/globals.css';
+import Header from '../components/Header';
+import '../css/global.css';
 
-function RootLayout({ children }: { children: React.ReactNode }) {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className="bg-gray-50 h-screen overflow-y-scroll scrollbar-hide"
+    >
       <head>
-        <title>Template</title>
-        <meta name="description" content="App Template" />
+        <title>Instagram</title>
+        <meta name="description" content="Instagram clone" />
         <link rel="icon" href="/favicon.ico" />
       </head>
 
-      <body>{children}</body>
+      <body>
+        <Header />
+        {children}
+      </body>
     </html>
   );
-}
+};
 
 export default RootLayout;
