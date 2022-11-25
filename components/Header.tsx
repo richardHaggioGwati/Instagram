@@ -58,7 +58,7 @@ const Header = () => {
           <UserGroupIcon className="navBtn" />
           <HeartIcon className="navBtn" />
           <img
-            src="https://links.papareact.com/3ke"
+            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
             className="h-10 rounded-full cursor-pointer"
             alt="profile"
           />

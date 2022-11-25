@@ -8,7 +8,7 @@ const MiniProfile: React.FC = () => {
         className="rounded-full border p-[2px] w-16 h16"
       />
 
-      <div>
+      <div className="flex-1 mx-4">
         <h2 className="font-bold">users</h2>
         <h3 className="text-sm text-gray-400">Welcome to Instagram</h3>
       </div>

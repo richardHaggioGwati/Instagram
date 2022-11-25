@@ -4,15 +4,19 @@ const DUMMY_POSTS = [
   {
     id: 123,
     username: 'David Shaw',
-    userImage: 'https://links.papareact.com/3ke',
-    image: 'https://links.papareact.com/3ke',
+    userImage:
+      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80',
+    image:
+      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80',
     caption: 'This is hopefully dope',
   },
   {
     id: 321,
     username: 'Insta',
-    userImage: 'https://links.papareact.com/3ke',
-    image: 'https://links.papareact.com/3ke',
+    userImage:
+      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80',
+    image:
+      'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80',
     caption: 'This is hopefully dope',
   },
 ];
