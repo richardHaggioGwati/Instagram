@@ -3,11 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
-    appDir: true
+    appDir: true,
   },
   images: {
-    domains: ['links.papareact.com']
-  }
-}
+    domains: ['links.papareact.com', 'images.unsplash.com'],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
