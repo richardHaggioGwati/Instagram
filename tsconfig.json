@@ -29,7 +29,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "seed.js", "lib/firebase.ts"  ],
+, "lib/firebase.ts", "pages/api/hello.ts"  ],
   "exclude": [
     "node_modules"
   ]
