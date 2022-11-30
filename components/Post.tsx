@@ -28,7 +28,7 @@ const Post: React.FC<PostProps> = ({ username, userImage, image, caption }) => {
       </div>
 
       {/* img */}
-      <img src={image} alt="" className="object-cover w-full" />
+      <img src={image} alt="" className="object-cover w-full" loading="lazy" />
 
       {/* buttons */}
       <div className="flex justify-between px-4 pt-4">

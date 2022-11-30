@@ -1,4 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
+import { useSession, signIn, signOut } from 'next-auth/react';
+import { FormEvent } from 'react';
+import { useRouter } from 'next/router';
+
 import Image from 'next/image';
 import HomeIcon from './Icons/Home';
 import MenuIcon from './Icons/MenuIcon';
@@ -8,29 +12,45 @@ import PlusCircleIcon from './Icons/PlusCircleIcon';
 import UserGroupIcon from './Icons/UserGroupIcon';
 import HeartIcon from './Icons/HeartIcon';
 
-const Header = () => {
+const Header: React.FC = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleSignIn = (event: FormEvent) => {
+    event?.preventDefault();
+    signIn();
+  };
+
+  const handleSignOut = (event: FormEvent) => {
+    event?.preventDefault();
+    signOut();
+  };
   return (
     <div className="shadow-sm border-b bg-white sticky top-0 z-50">
       <div className="flex justify-between max-w-6xl mx-5 lg:mx-auto">
-        {/*  left */}
-        <div className="relative hidden lg:inline-grid w-24 cursor-pointer">
+        <div
+          onClick={() => router.push('/')}
+          className="relative hidden lg:inline-grid w-24 cursor-pointer"
+        >
           <Image
             className="object-contain"
             src="https://links.papareact.com/ocw"
             alt="instagram logo"
-            fill
+            layout="fill"
           />
         </div>
-        <div className="relative lg:hidden w-10 flex-shrink-0 cursor-pointer">
+        <div
+          onClick={() => router.push('/')}
+          className="relative lg:hidden w-10 flex-shrink-0 cursor-pointer"
+        >
           <Image
             className="object-contain"
             src="https://links.papareact.com/jjm"
             alt="instagram logo"
-            fill
+            layout="fill"
           />
         </div>
 
-        {/*  center */}
         <div className="max-w-xs">
           <div className="relative mt-1 p-3 rounded-md">
             <div className="absolute inset-y-0 pl-3 pt-5 flxe items-center pointer-events-none">
@@ -44,24 +64,36 @@ const Header = () => {
           </div>
         </div>
 
-        {/*  right md:hidden */}
         <div className="flex items-center justify-end space-x-4">
-          <HomeIcon className="navBtn" />
-          <MenuIcon className="h-6 cursor-pointer lg:hidden" />
-          <div className="relative navBtn">
-            <PaperAirPlane className="navBtn" />
-            <div className="absolute -top-1 -right-2 text-xs w-5 h-5 bg-red-500 rounded-full flex items-center justify-center animate-pulse text-white">
-              3
-            </div>
-          </div>
-          <PlusCircleIcon className="navBtn" />
-          <UserGroupIcon className="navBtn" />
-          <HeartIcon className="navBtn" />
-          <img
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
-            className="h-10 rounded-full cursor-pointer"
-            alt="profile"
+          <HomeIcon
+            onClickHandler={() => router.push('/')}
+            className="navBtn"
           />
+          <MenuIcon className="h-6 cursor-pointer lg:hidden" />
+          {session ? (
+            <>
+              <div className="relative navBtn">
+                <PaperAirPlane className="navBtn" />
+                <div className="absolute -top-1 -right-2 text-xs w-5 h-5 bg-red-500 rounded-full flex items-center justify-center animate-pulse text-white">
+                  3
+                </div>
+              </div>
+              <PlusCircleIcon className="navBtn" />
+              <UserGroupIcon className="navBtn" />
+              <HeartIcon className="navBtn" />
+
+              <img
+                onClick={handleSignOut}
+                src={`${session.user?.image}`}
+                className="h-10 w-10 rounded-full cursor-pointer"
+                alt="profile"
+              />
+            </>
+          ) : (
+            <button type="button" onClick={handleSignIn}>
+              Sign In
+            </button>
+          )}
         </div>
       </div>
     </div>

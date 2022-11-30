@@ -1,8 +1,8 @@
-import { initializeApp } from 'firebase/app';
-import 'firebase/auth';
-import { FieldValue } from 'firebase/firestore';
+import { initializeApp, getApp, getApps } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
-const config = {
+const firebaseConfig = {
   apiKey: 'AIzaSyCwknZsQ9qVmCayResVHk-icgD7iiivH90',
   authDomain: 'instagram-f07c5.firebaseapp.com',
   projectId: 'instagram-f07c5',
@@ -11,6 +11,12 @@ const config = {
   appId: '1:111409447947:web:63a373bb7da8d0a888b30e',
 };
 
-const firebase = initializeApp(config);
+// Singleton patern to ensure only one instance of Firebase exists per session
+const firebaseApp = !getApps().length
+  ? initializeApp(firebaseConfig)
+  : getApp();
 
-export { firebase, FieldValue };
+const firebaseDB = getFirestore();
+const firebaseStorage = getStorage();
+
+export { firebaseApp, firebaseDB, firebaseStorage };
