@@ -14,7 +14,7 @@ const signIn: React.FC<SignInProps> = ({ providers }) => {
       <div className="flex flex-col items-center justify-center min-h-screen py-2 -mt-56 px-14 text-center ">
         <img className="w-80" src="https://links.papareact.com/ocw" alt="" />
         <p className="font-bold">
-          This is not a real app, it&apos;s built for educational purposes only
+          This is not a real app, it&apos;s built for educational purposes only.
         </p>
 
         <div className="mt-40">

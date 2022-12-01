@@ -1,8 +1,9 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import type { AppProps } from 'next/app';
-import Head from 'next/head';
 import '../css/global.css';
+/* eslint-disable react/jsx-props-no-spreading */
+import Head from 'next/head';
+import type { AppProps } from 'next/app';
 import { SessionProvider } from 'next-auth/react';
+import { RecoilRoot } from 'recoil';
 
 const MyApp = ({ Component, pageProps }: AppProps, { session }: any) => {
   return (
@@ -13,7 +14,9 @@ const MyApp = ({ Component, pageProps }: AppProps, { session }: any) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <RecoilRoot>
+          <Component {...pageProps} />
+        </RecoilRoot>
       </SessionProvider>
     </>
   );
