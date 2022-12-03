@@ -1,34 +1,26 @@
 import { useEffect, useState } from 'react';
-import { faker } from '@faker-js/faker';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import Post from './Post';
-
-interface DummyResponse {
-  username: string;
-  userImage: string;
-  image: string;
-  caption: string;
-  id: number;
-}
+import { firebaseDB } from '../lib/firebase';
 
 const Posts: React.FC = () => {
-  const [fakerResponse, setfakerResponse] = useState<DummyResponse[]>([]);
+  const [posts, setPosts] = useState<any>([]);
 
-  useEffect(() => {
-    const dummyPosts = [...Array(3)].map((_, index) => ({
-      userImage: faker.image.avatar(),
-      username: faker.name.firstName(),
-      image: faker.image.abstract(),
-      caption: faker.random.words(6),
-      id: index,
-    }));
-
-    setfakerResponse(dummyPosts);
-  }, []);
+  useEffect(
+    () =>
+      onSnapshot(
+        query(collection(firebaseDB, 'posts'), orderBy('timeStamp', 'desc')),
+        (snapshot) => {
+          setPosts(snapshot.docs);
+        },
+      ),
+    [],
+  );
 
   return (
     <div>
-      {fakerResponse?.map((post) => (
-        <Post key={post.id} postProps={post} />
+      {posts.map((post: any) => (
+        <Post key={post.id} post={post.data()} />
       ))}
     </div>
   );
