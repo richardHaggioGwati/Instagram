@@ -9,11 +9,11 @@ import {
   PlusCircleIcon,
   UserGroupIcon,
   HeartIcon,
-  Bars3Icon,
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline';
-
 import Image from 'next/image';
+import instagram from '../public/Instagram_logo.png';
+import instagramMobile from '../public/insta-mobile.png';
 import modalState from '../atoms/modalAtom';
 
 const Header: React.FC = () => {
@@ -40,7 +40,7 @@ const Header: React.FC = () => {
         >
           <Image
             className="object-contain"
-            src="https://links.papareact.com/ocw"
+            src={instagram}
             alt="instagram logo"
             layout="fill"
           />
@@ -51,7 +51,7 @@ const Header: React.FC = () => {
         >
           <Image
             className="object-contain"
-            src="https://links.papareact.com/jjm"
+            src={instagramMobile}
             alt="instagram logo"
             layout="fill"
           />
@@ -72,9 +72,12 @@ const Header: React.FC = () => {
 
         <div className="flex items-center justify-end space-x-4">
           <HomeIcon onClick={() => router.push('/')} className="navBtn" />
-          <Bars3Icon className="h-6 cursor-pointer lg:hidden" />
           {session ? (
             <>
+              <PlusCircleIcon
+                className="h-7 cursor-pointer lg:hidden"
+                onClick={() => setOpen(!open)}
+              />
               <div className="relative navBtn">
                 <PaperAirplaneIcon className="navBtn" />
                 <div className="absolute -top-1 -right-2 text-xs w-5 h-5 bg-red-500 rounded-full flex items-center justify-center animate-pulse text-white">

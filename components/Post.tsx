@@ -7,17 +7,20 @@ import {
   ChatBubbleOvalLeftEllipsisIcon,
   EllipsisHorizontalIcon,
 } from '@heroicons/react/24/outline';
+import { HeartIcon as HearIconSolid } from '@heroicons/react/24/solid';
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
 } from 'firebase/firestore';
 import { useSession } from 'next-auth/react';
 import { useState, FormEvent, useEffect } from 'react';
-import Moment from 'react-moment';
 import { firebaseDB } from '../lib/firebase';
 
 /* eslint-disable @next/next/no-img-element */
@@ -38,8 +41,9 @@ const Post: React.FC<PostProps> = ({
 }) => {
   const { data: session } = useSession();
   const [comment, setComment] = useState('');
-
   const [comments, setComments] = useState<{}[]>([]);
+  const [likes, setLikes] = useState<{ id?: string }[]>([]);
+  const [hasLiked, setHasLiked] = useState(false);
 
   useEffect(
     () =>
@@ -52,6 +56,36 @@ const Post: React.FC<PostProps> = ({
       ),
     [identifier],
   );
+
+  useEffect(
+    () =>
+      onSnapshot(
+        collection(firebaseDB, `posts/${identifier}/likes`),
+        (snapshot) => setLikes(snapshot.docs),
+      ),
+    [identifier],
+  );
+
+  useEffect(
+    () =>
+      setHasLiked(likes.findIndex((like) => like.id === session?.uid) !== -1),
+    [likes, session?.uid],
+  );
+
+  const likePost = async () => {
+    if (hasLiked) {
+      await deleteDoc(
+        doc(firebaseDB, `posts/${identifier}/likes`, `${session?.uid}`),
+      );
+    } else {
+      await setDoc(
+        doc(firebaseDB, `posts/${identifier}/likes`, `${session?.uid}`),
+        {
+          username: session?.user.username,
+        },
+      );
+    }
+  };
 
   const sendComment = async (event: FormEvent) => {
     event.preventDefault();
@@ -70,7 +104,6 @@ const Post: React.FC<PostProps> = ({
 
   return (
     <div className="bg-white my-7 border rounded-sm">
-      {/* Header */}
       <div className="flex items-center p-5">
         <img
           src={profileImage}
@@ -81,14 +114,16 @@ const Post: React.FC<PostProps> = ({
         <EllipsisHorizontalIcon className="h-5" />
       </div>
 
-      {/* img */}
       <img src={image} alt="" className="object-cover w-full" loading="lazy" />
 
-      {/* buttons */}
       {session && (
         <div className="flex justify-between px-4 pt-4">
           <div className="flex space-x-4">
-            <HeartIcon className="btn" />
+            {hasLiked ? (
+              <HearIconSolid onClick={likePost} className="btn text-red-600" />
+            ) : (
+              <HeartIcon onClick={likePost} className="btn" />
+            )}
             <PaperAirplaneIcon className="btn" />
             <ChatBubbleOvalLeftEllipsisIcon className="btn" />
           </div>
@@ -97,11 +132,13 @@ const Post: React.FC<PostProps> = ({
         </div>
       )}
 
-      {/* caption */}
       <p className="p-5 truncate">
+        {likes.length > 0 && (
+          <p className="font-bold mr-1"> {likes.length} likes</p>
+        )}
         <span className="font-bold mr-1">{username} </span> {caption}
       </p>
-      {/* comments */}
+
       {comments.length > 0 && (
         <div className="ml-10 h-20 overflow-y-scroll scrollbar-thumb-black scrollbar-thin">
           {comments.map((com: any, index) => (
@@ -118,20 +155,11 @@ const Post: React.FC<PostProps> = ({
                 <span className="font-bold">{com.data().username}</span>{' '}
                 {com.data().comment}
               </p>
-              <Moment
-                format="hh:mm:ss"
-                trim
-                className="text-sm ml-1"
-                durationFromNow
-                interval={400}
-                date={com.data().timeStamp?.toDate()}
-              />
             </div>
           ))}
         </div>
       )}
 
-      {/* input box */}
       {session && (
         <form className="flex items-center p-4">
           <FaceSmileIcon className="h-7" />
