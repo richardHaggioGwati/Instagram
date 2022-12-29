@@ -1,35 +1,30 @@
 /* eslint-disable @next/next/no-img-element */
-import { useSession, signIn, signOut } from 'next-auth/react';
-import { FormEvent } from 'react';
+import { FormEvent, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useRecoilState } from 'recoil';
 import {
   HomeIcon,
   PaperAirplaneIcon,
   PlusCircleIcon,
-  UserGroupIcon,
-  HeartIcon,
   MagnifyingGlassIcon,
+  ArrowLeftOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
-import instagram from '../public/Instagram_logo.png';
+import instagram from '../public/logo.png';
 import instagramMobile from '../public/insta-mobile.png';
 import modalState from '../atoms/modalAtom';
+import { UserContext } from '../context/instaContext';
 
 const Header: React.FC = () => {
-  const { data: session } = useSession();
+  const { user, logout } = useContext(UserContext);
   const router = useRouter();
 
   const [open, setOpen] = useRecoilState(modalState);
 
-  const handleSignIn = (event: FormEvent) => {
-    event?.preventDefault();
-    signIn();
-  };
-
   const handleSignOut = (event: FormEvent) => {
     event?.preventDefault();
-    signOut();
+    router.push('/login');
+    logout();
   };
   return (
     <div className="shadow-sm border-b bg-white sticky top-0 z-50">
@@ -43,6 +38,7 @@ const Header: React.FC = () => {
             src={instagram}
             alt="instagram logo"
             layout="fill"
+            priority
           />
         </div>
         <div
@@ -54,12 +50,13 @@ const Header: React.FC = () => {
             src={instagramMobile}
             alt="instagram logo"
             layout="fill"
+            priority
           />
         </div>
 
         <div className="max-w-xs">
           <div className="relative mt-1 p-3 rounded-md">
-            <div className="absolute inset-y-0 pl-3 pt-5 flxe items-center pointer-events-none">
+            <div className="absolute inset-y-0 pl-3 pt-5 items-center pointer-events-none">
               <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
             </div>
             <input
@@ -72,7 +69,7 @@ const Header: React.FC = () => {
 
         <div className="flex items-center justify-end space-x-4">
           <HomeIcon onClick={() => router.push('/')} className="navBtn" />
-          {session ? (
+          {user ? (
             <>
               <PlusCircleIcon
                 className="h-7 cursor-pointer lg:hidden"
@@ -88,18 +85,20 @@ const Header: React.FC = () => {
                 className="navBtn"
                 onClick={() => setOpen(!open)}
               />
-              <UserGroupIcon className="navBtn" />
-              <HeartIcon className="navBtn" />
+              <ArrowLeftOnRectangleIcon
+                className="navBtn"
+                onClick={handleSignOut}
+              />
 
               <img
-                onClick={handleSignOut}
-                src={`${session.user?.image}`}
+                onClick={() => router.push('/account')}
+                src={`${user.photoURL}`}
                 className="h-10 w-10 rounded-full cursor-pointer"
                 alt="profile"
               />
             </>
           ) : (
-            <button type="button" onClick={handleSignIn}>
+            <button type="button" onClick={() => router.push('/login')}>
               Sign In
             </button>
           )}

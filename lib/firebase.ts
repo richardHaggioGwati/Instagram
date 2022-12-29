@@ -1,6 +1,7 @@
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCwknZsQ9qVmCayResVHk-icgD7iiivH90',
@@ -11,12 +12,14 @@ const firebaseConfig = {
   appId: '1:111409447947:web:63a373bb7da8d0a888b30e',
 };
 
-// Singleton patern to ensure only one instance of Firebase exists per session
+// Singleton pattern to ensure only one instance of Firebase exists per session
 const firebaseApp = !getApps().length
   ? initializeApp(firebaseConfig)
   : getApp();
 
+const firebaseAuthentication = getAuth(firebaseApp);
+
 const firebaseDB = getFirestore();
 const firebaseStorage = getStorage();
 
-export { firebaseApp, firebaseDB, firebaseStorage };
+export { firebaseApp, firebaseDB, firebaseStorage, firebaseAuthentication };

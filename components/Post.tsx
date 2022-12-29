@@ -19,8 +19,8 @@ import {
   serverTimestamp,
   setDoc,
 } from 'firebase/firestore';
-import { useSession } from 'next-auth/react';
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, useContext } from 'react';
+import { UserContext } from '../context/instaContext';
 import { firebaseDB } from '../lib/firebase';
 
 /* eslint-disable @next/next/no-img-element */
@@ -39,7 +39,7 @@ const Post: React.FC<PostProps> = ({
   post: { username, profileImage, image, caption },
   identifier,
 }) => {
-  const { data: session } = useSession();
+  const { user } = useContext(UserContext);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState<{}[]>([]);
   const [likes, setLikes] = useState<{ id?: string }[]>([]);
@@ -67,21 +67,20 @@ const Post: React.FC<PostProps> = ({
   );
 
   useEffect(
-    () =>
-      setHasLiked(likes.findIndex((like) => like.id === session?.uid) !== -1),
-    [likes, session?.uid],
+    () => setHasLiked(likes.findIndex((like) => like.id === user?.uid) !== -1),
+    [likes, user?.uid],
   );
 
   const likePost = async () => {
     if (hasLiked) {
       await deleteDoc(
-        doc(firebaseDB, `posts/${identifier}/likes`, `${session?.uid}`),
+        doc(firebaseDB, `posts/${identifier}/likes`, `${user?.uid}`),
       );
     } else {
       await setDoc(
-        doc(firebaseDB, `posts/${identifier}/likes`, `${session?.uid}`),
+        doc(firebaseDB, `posts/${identifier}/likes`, `${user?.uid}`),
         {
-          username: session?.user.username,
+          username: user.displayName,
         },
       );
     }
@@ -96,8 +95,8 @@ const Post: React.FC<PostProps> = ({
 
     await addDoc(collection(firebaseDB, `posts/${identifier}/comments`), {
       comment: commentToSend,
-      username: session?.user.username,
-      userImage: session?.user.image,
+      username: user.displayName,
+      userImage: user.photoURL,
       timeStamp: serverTimestamp(),
     });
   };
@@ -108,7 +107,7 @@ const Post: React.FC<PostProps> = ({
         <img
           src={profileImage}
           alt="profile"
-          className="rounded-full h-12 w-12 object-contain border p-1 mr-3"
+          className="rounded-full h-12 w-12 border p-1 mr-3"
         />
         <p className="flex-1 font-bold">{username}</p>
         <EllipsisHorizontalIcon className="h-5" />
@@ -116,7 +115,7 @@ const Post: React.FC<PostProps> = ({
 
       <img src={image} alt="" className="object-cover w-full" loading="lazy" />
 
-      {session && (
+      {user && (
         <div className="flex justify-between px-4 pt-4">
           <div className="flex space-x-4">
             {hasLiked ? (
@@ -160,7 +159,7 @@ const Post: React.FC<PostProps> = ({
         </div>
       )}
 
-      {session && (
+      {user && (
         <form className="flex items-center p-4">
           <FaceSmileIcon className="h-7" />
           <input

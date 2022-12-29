@@ -2,7 +2,7 @@
 import { useRecoilState } from 'recoil';
 import { Dialog, Transition } from '@headlessui/react';
 import { CameraIcon } from '@heroicons/react/24/outline';
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useContext, useRef, useState } from 'react';
 import {
   addDoc,
   collection,
@@ -10,17 +10,17 @@ import {
   serverTimestamp,
   updateDoc,
 } from 'firebase/firestore';
-import { useSession } from 'next-auth/react';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import { firebaseDB, firebaseStorage } from '../lib/firebase';
 import modalState from '../atoms/modalAtom';
+import { UserContext } from '../context/instaContext';
 
 const Modal: React.FC = () => {
   const [open, setOpen] = useRecoilState(modalState);
   const filePickerRef = useRef<HTMLInputElement>(null);
   const captionRef = useRef<HTMLInputElement>(null);
-  const [loading, setLoading] = useState<Boolean>(false);
-  const { data: session } = useSession();
+  const [loading, setLoading] = useState(false);
+  const { user } = useContext(UserContext);
   const [selectedFile, setSelectedFile] = useState<any>();
 
   const uploadPost = async () => {
@@ -28,9 +28,9 @@ const Modal: React.FC = () => {
 
     setLoading(true);
     const docRef = await addDoc(collection(firebaseDB, 'posts'), {
-      username: session?.user.username,
+      username: user.displayName,
       caption: captionRef.current?.value,
-      profileImage: session?.user.image,
+      profileImage: user.photoURL,
       timeStamp: serverTimestamp(),
     });
 

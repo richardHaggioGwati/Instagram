@@ -2,10 +2,10 @@ import '../css/global.css';
 /* eslint-disable react/jsx-props-no-spreading */
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
-import { SessionProvider } from 'next-auth/react';
 import { RecoilRoot } from 'recoil';
+import { UserContextProvider } from '../context/instaContext';
 
-const MyApp = ({ Component, pageProps }: AppProps, { session }: any) => {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
@@ -13,11 +13,11 @@ const MyApp = ({ Component, pageProps }: AppProps, { session }: any) => {
         <meta name="description" content="Instagram" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <SessionProvider session={session}>
+      <UserContextProvider>
         <RecoilRoot>
           <Component {...pageProps} />
         </RecoilRoot>
-      </SessionProvider>
+      </UserContextProvider>
     </>
   );
 };
