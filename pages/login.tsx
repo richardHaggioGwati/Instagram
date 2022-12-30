@@ -120,7 +120,7 @@ const Login: NextPage = () => {
 
           <div className="w-full rounded ">
             <button
-              type="submit"
+              type="button"
               onClick={registerWithGoogle}
               className="bg-blue-400  text-white w-full rounded h-8 font-bold"
             >
@@ -128,6 +128,7 @@ const Login: NextPage = () => {
             </button>
           </div>
         </div>
+
         <div className="flex justify-center items-center flex-col w-full bg-white p-4 rounded border border-gray-primary">
           <p className="text-sm">
             Don&rsquo;t have an account?{` `}

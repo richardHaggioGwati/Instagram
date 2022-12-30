@@ -39,9 +39,6 @@ interface Prop {
   children: React.ReactNode;
 }
 
-/**
- * !Use state values as context values
- */
 export const UserContext = createContext<UserHelpers>({
   user: { displayName: '', photoURL: '', email: '/null.png', uid: '' },
   createUser: () => Promise.resolve(),
@@ -51,11 +48,7 @@ export const UserContext = createContext<UserHelpers>({
 });
 
 export const UserContextProvider: React.FC<Prop> = ({ children }) => {
-  /**
-   * ! Provide type of user
-   */
   const [newUser, setNewUser] = useState<UserProfile>();
-  console.log('🚀 ~ file: instaContext.tsx:50 ~ newUser', newUser);
   const router = useRouter();
   const provider = new GoogleAuthProvider();
 
@@ -64,15 +57,22 @@ export const UserContextProvider: React.FC<Prop> = ({ children }) => {
   });
 
   useEffect(() => {
-    onAuthStateChanged(firebaseAuthentication, (currentUser) => {
-      const localeUser = {
-        displayName: currentUser?.displayName,
-        photoURL: currentUser?.photoURL,
-        email: currentUser?.email,
-        uid: currentUser?.uid,
-      };
-      setNewUser(localeUser);
-    });
+    const unsubscribe = onAuthStateChanged(
+      firebaseAuthentication,
+      (currentUser) => {
+        const localeUser = {
+          displayName: currentUser?.displayName,
+          photoURL: currentUser?.photoURL,
+          email: currentUser?.email,
+          uid: currentUser?.uid,
+        };
+        setNewUser(localeUser);
+      },
+    );
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const logoutHandler = () => {
@@ -93,44 +93,27 @@ export const UserContextProvider: React.FC<Prop> = ({ children }) => {
     signInWithPopup(firebaseAuthentication, provider)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        console.log(
-          '🚀 ~ file: instaContext.tsx:81 ~ .then ~ credential',
-          credential,
-        );
-        const token = credential?.accessToken;
-        console.log('🚀 ~ file: instaContext.tsx:83 ~ .then ~ token', token);
+        // const credential = GoogleAuthProvider.credentialFromResult(result);
+        // const token = credential?.accessToken;
+
         // The signed-in user info.
         const { user } = result;
-        router.push('/');
         setNewUser(user);
-        // ...
+        router.push('/');
       })
       .catch((error) => {
         // Handle Errors here.
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const errorCode = error.code;
-        console.log(
-          '🚀 ~ file: instaContext.tsx:95 ~ signInWithGoogle ~ errorCode',
-          errorCode,
-        );
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const errorMessage = error.message;
-        console.log(
-          '🚀 ~ file: instaContext.tsx:97 ~ signInWithGoogle ~ errorMessage',
-          errorMessage,
-        );
-        // The email of the user's account used.
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { email } = error;
-        console.log(
-          '🚀 ~ file: instaContext.tsx:100 ~ signInWithGoogle ~ email',
-          email,
-        );
-        // The AuthCredential type that was used.
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const credential = GoogleAuthProvider.credentialFromError(error);
-        console.log(
-          '🚀 ~ file: instaContext.tsx:103 ~ signInWithGoogle ~ credential',
-          credential,
-        );
-        // ... set errors to provided object
+
+        // ... return error object
       });
   };
 
@@ -152,7 +135,7 @@ export const UserContextProvider: React.FC<Prop> = ({ children }) => {
     });
   };
 
-  const contextValue: UserHelpers = {
+  const contextValue = {
     user: newUser,
     createUser: createUserHandler,
     logout: logoutHandler,
